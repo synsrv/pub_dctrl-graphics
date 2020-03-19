@@ -4,7 +4,8 @@ import matplotlib.pyplot as pl
 
 matplotlib.rc('text', usetex=True)
 pl.rcParams['text.latex.preamble'] = [
-    r'\usepackage{tgheros}',    
+    r'\usepackage{tgheros}',
+    r'\usepackage{amsmath}',
     r'\usepackage[eulergreek]{sansmath}',   
     r'\sansmath',
     r'\usepackage{siunitx}',    
@@ -140,8 +141,17 @@ for ax in [ax1,ax2]:
         # xs = np.array([0, 1, 2, 3, 4, 5, 6, 7])
         xs = np.linspace(0, 11, num=1000)
         ys = (1-p)**xs
-        label='exponential model'
+        # label='exponential model\n' +\
+        #      r'\baselineskip=10pt \setlength{\belowdisplayskip}{1cm}' +\
+        #       r'\[f(t) = (1-p)^{\frac{t}{\text{\SI{4}{d}}}},\vspace{0.1cm}\]' +\
+        #       r'\medskip\vspace{0.2cm}'+ '\n  sjust text'# +r'\[\text{with} p = 0.25\]'
+
+        label='exponential model\n' +\
+              r'\[f(t) = (1-p)^{\frac{t}{\text{\SI{4}{d}}}},\]'
+
         ax.plot(xs*4, ys, label=label)
+
+
 
 
 
@@ -159,7 +169,7 @@ for ax in [ax1,ax2]:
 ax1.set_xlabel('time since synapse\n growth [d]')    
 ax2.set_xlabel('time since synapse\n growth [d]')
 
-ax1.set_ylabel('probability of survival')
+ax1.set_ylabel('probability of survival $f(t)$')
 # ax2.set_ylabel('probability of survival')
 
 
@@ -179,9 +189,10 @@ ax2.legend(handles, labels, frameon=False, prop={'size': 10},
            loc='center left', labelspacing=1.15, borderpad=1.25,
            bbox_to_anchor=(1, 0.5))
 
+ax2.text(1.37, -0.04, 'with $p=0.25$', transform=ax.transAxes)
 
     
-fig.tight_layout(rect=[0., 0., 1, 0.95])
+fig.tight_layout()
 
 import os
 fname = os.path.splitext(os.path.basename(__file__))[0]

@@ -42,18 +42,20 @@ def plot_wtail(df, ax):
 
 import matplotlib as mpl
 mpl.use('Agg')
+
 from matplotlib import style
 style.use('classic')
+
 import pylab as pl
 from matplotlib import rc
 
+rc('font',**{'family':'sans-serif','sans-serif':['Computer Modern Sans serif']})
 rc('text', usetex=True)
 pl.rcParams['text.latex.preamble'] = [
-    r'\usepackage{tgheros}',    # helvetica font
-    r'\usepackage{sansmath}',   # math-font matching helvetica
-    r'\sansmath'                # actually tell tex to use it!
-    r'\usepackage{siunitx}',    # micro symbols
-    r'\sisetup{detect-all}',    # force siunitx to use the fonts
+    r'\usepackage[eulergreek]{sansmath}',  
+    r'\sansmath',               
+    r'\usepackage{siunitx}',   
+    r'\sisetup{detect-all}'
 ]  
 
 
@@ -61,7 +63,7 @@ fig = pl.figure()
 fig.set_size_inches(6.,1.2)
 
 ax = fig.add_subplot(111)
-xlow = 150
+xlow = 150+25
 
 df = L.dfs[0]
 
@@ -79,8 +81,19 @@ while low<df["Tmax"]:
     else:
         break
 
+xva = range(k-(df["Tmax"]-900)+22,k)
+yva = df["wrecs"][11][900:df["Tmax"]][6:-16]
+
+
+
+ax.plot(xva, yva, 'grey')
+
+print(yva)
+
 ax.plot(range(k,low),df["wrecs"][i][k:low], 'black')
-ax.plot([xlow,k],[df["X_0"]]*2, 'black', linestyle=':')
+
+
+ax.plot([xlow,k-(df["Tmax"]-900)+22],[df["X_0"]]*2, 'black', linestyle=':')
 
 while k<df["Tmax"]:
     if df["wrecs"][i,k]>0:
@@ -96,22 +109,23 @@ while l<df["Tmax"]:
         l+=1
 
 ax.plot(range(k,df["Tmax"]),df["wrecs"][i][l:l+df["Tmax"]-k], 'grey')
-ax.plot([k, df["Tmax"]],[df["XT"]]*2, 'black', linestyle=':')
+
+ax.plot([k, df["Tmax"]*1.05],[df["XT"]]*2, 'black', linestyle=':')
 
 print(len(list(range(k,df["Tmax"]))))
 print(len(df["wrecs"][i][l:l+df["Tmax"]-k]))
 
 
-ax.set_xlim(xlow, df["Tmax"])
+ax.set_xlim(xlow, df["Tmax"]*1.05)
 ax.set_ylim(bottom=-0.0875)
 
 
-pl.xticks([xlow,z,k, df["Tmax"]], ['$T=0$', '$T_{\mathrm{init}}$','', '$T_{\mathrm{max}}$'])
+pl.xticks([z-(df["Tmax"]-900)+22,z,k, df["Tmax"]], ['$t=0$', '','', '$t=t_{\mathrm{max}}$'])
 pl.yticks([df["X_0"]], ["$X_{\mathrm{insert}}$"])
 
 ax2 = ax.twinx()
 ax2.set_ylim(ax.get_ylim())
-ax
+# ax
 pl.yticks([df["XT"], df["wrecs"][i][l+df["Tmax"]-k]], ["$X_\mathrm{prune}$", "$X_{T_{\mathrm{max}}}$"])
 
 ax.spines['right'].set_visible(False)
@@ -120,6 +134,8 @@ ax2.spines['right'].set_visible(False)
 ax2.spines['top'].set_visible(False)
 ax.yaxis.set_ticks_position('left')
 ax.xaxis.set_ticks_position('bottom')
+
+ax.tick_params(axis='x', which='major', pad=7)
 
 l = k-z
 mid = z+(k-z)/2
@@ -144,8 +160,16 @@ ax.text(mid, -0.38, '$T$', fontdict={'ha': 'center'}, clip_on=False)
 #          head_width=0.05, head_length=(k-z)*0.05,
 #          head_starts_at_zero=False, color='k')
 
+
 import os
 fname = os.path.splitext(os.path.basename(__file__))[0]
 
 fig.savefig("{}.pdf".format(fname), dpi=300, bbox_inches='tight')
 
+
+
+# copy the generated graphic to thesis LaTeX folder
+from shutil import copyfile
+dest = "/home/fh/sci/rsc/dctrl/pub/scrpt/img/"
+copyfile("{}.pdf".format(fname), dest+"{}.pdf".format(fname))
+print("Copied file to \n\t" + dest + "{}.pdf".format(fname))

@@ -37,7 +37,7 @@ xfig = 2.85
 
 fig, (ax1,ax2,ax3) = pl.subplots(1,3,
                                  gridspec_kw={'width_ratios': [1.3, 1.3,1]})
-fig.set_size_inches(xfig*1.4*1.22*1.2*1.05,2.2*1.22)
+fig.set_size_inches(xfig*1.4*1.22*1.2*1.025,2.2*1.22*0.95)
 
 
 df = load_lw2015_data()
@@ -78,7 +78,7 @@ for ax in [ax1,ax2]:
 
 
         klabel =   'power law model \n ' + \
-                  r'\[f(t) = (\frac{t}{\text{\SI{4}{d}}}+1)^{-\gamma},\]' +\
+                  r'\[f_{\mathrm{pl}}(t) = \Big(\frac{t}{\text{\SI{4}{d}}}+1\Big)^{-\gamma},\]' +\
                    '\nwith ' + r'$\gamma=1.384$'
 
         ax.plot(xs,ys, 'red', label=klabel, zorder=50)
@@ -136,18 +136,18 @@ for ax in [ax1,ax2]:
         # xs = np.linspace(0, day[-1], 1000)
 
         # p = master
-        p = (1421-999)/1421.
+        p = 999/1421.
 
         # xs = np.array([0, 1, 2, 3, 4, 5, 6, 7])
         xs = np.linspace(0, 11, num=1000)
-        ys = (1-p)**xs
+        ys = p**xs
         # label='exponential model\n' +\
         #      r'\baselineskip=10pt \setlength{\belowdisplayskip}{1cm}' +\
         #       r'\[f(t) = (1-p)^{\frac{t}{\text{\SI{4}{d}}}},\vspace{0.1cm}\]' +\
         #       r'\medskip\vspace{0.2cm}'+ '\n  sjust text'# +r'\[\text{with} p = 0.25\]'
 
         label='exponential model\n' +\
-              r'\[f(t) = (1-p)^{\frac{t}{\text{\SI{4}{d}}}},\]'
+              r'\[f_{\mathrm{ex}}(t) = p^{\frac{t}{\text{\SI{4}{d}}}},\]'
 
         ax.plot(xs*4, ys, label=label)
 
@@ -169,7 +169,7 @@ for ax in [ax1,ax2]:
 ax1.set_xlabel('time since synapse\n growth [d]')    
 ax2.set_xlabel('time since synapse\n growth [d]')
 
-ax1.set_ylabel('probability of survival $f(t)$')
+ax1.set_ylabel('probability of survival')
 # ax2.set_ylabel('probability of survival')
 
 
@@ -189,7 +189,7 @@ ax2.legend(handles, labels, frameon=False, prop={'size': 10},
            loc='center left', labelspacing=1.15, borderpad=1.25,
            bbox_to_anchor=(1, 0.5))
 
-ax2.text(1.37, -0.04, 'with $p=0.25$', transform=ax.transAxes)
+ax2.text(1.377, -0.07, 'with $p=%.3f$' %(999/1421), transform=ax.transAxes)
 
     
 fig.tight_layout()
